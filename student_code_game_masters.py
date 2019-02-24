@@ -299,29 +299,35 @@ class Puzzle8Game(GameMaster):
             None
         """
         #get the name of the tile to move, is the first term of movable's fact
-        tileToMove = movable_statement.terms[0]
+        tileToMove = str(movable_statement.terms[0])
         #get the tile's X
-        initX = movable_statement.terms[1]
+        initX = str(movable_statement.terms[1])
         #get the tile's Y
-        initY = movable_statement.terms[2]
+        initY = str(movable_statement.terms[2])
         #get the empty slot's X
-        destX = movable_statement.terms[3]
+        destX = str(movable_statement.terms[3])
         #get the empty slot's Y
-        destY = movable_statement.terms[4]
+        destY = str(movable_statement.terms[4])
 
         #if we are moving a tile, then remove XY coordinates of tile moved
-        self.kb.kb_retract(Fact(['X',str(tileToMove),str(initX)]))
-        self.kb.kb_retract(Fact(['Y',str(tileToMove),str(initY)]))
+        self.kb.kb_retract(Fact(['XY', tileToMove, initX, initY]))
+        #self.kb.kb_retract(Fact(['X',str(tileToMove),str(initX)]))
+        #self.kb.kb_retract(Fact(['Y',str(tileToMove),str(initY)]))
+
         #if we are moving a tile, then remove XY coordinates of the empty slot
-        self.kb.kb_retract(Fact(['X','empty',str(destX)]))
-        self.kb.kb_retract(Fact(['Y','empty',str(destY)]))
+        self.kb.kb_retract(Fact(['XY', 'empty', destX, destY]))
+        #self.kb.kb_retract(Fact(['X','empty',str(destX)]))
+        #self.kb.kb_retract(Fact(['Y','empty',str(destY)]))
 
         #if we are moving a tile, then add XY coordinates of tile moved's destination
-        self.kb.kb_assert(Fact(['X',str(tileToMove),str(destX)]))
-        self.kb.kb_assert(Fact(['Y',str(tileToMove),str(destY)]))
+        self.kb.kb_assert(Fact(['XY', tileToMove, destX, destY]))
+        #self.kb.kb_assert(Fact(['X',str(tileToMove),str(destX)]))
+        #self.kb.kb_assert(Fact(['Y',str(tileToMove),str(destY)]))
+
         #if we are moving a tile, then add XY coordinates of new empty slot
-        self.kb.kb_assert(Fact(['X','empty',str(initX)]))
-        self.kb.kb_assert(Fact(['Y','empty',str(initY)]))
+        self.kb.kb_assert(Fact(['XY', 'empty', initX, initY]))
+        #self.kb.kb_assert(Fact(['X','empty',str(initX)]))
+        #self.kb.kb_assert(Fact(['Y','empty',str(initY)]))
 
     def reverseMove(self, movable_statement):
         """
