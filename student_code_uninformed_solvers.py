@@ -20,6 +20,7 @@ class SolverDFS(UninformedSolver):
         """
         ### Student code goes here
         if self.currentState.state == self.victoryCondition:
+            self.visited[self.currentState] = True
             return True
 
         self.visited[self.currentState] = True
@@ -70,4 +71,35 @@ class SolverBFS(UninformedSolver):
             True if the desired solution state is reached, False otherwise
         """
         ### Student code goes here
-        return True
+        if self.currentState.state == self.victoryCondition:
+            self.visited[self.currentState] = True
+            return True
+
+        self.visited[self.currentState] = True
+
+        poss = self.gm.getMovables()
+
+        for c in poss:
+            self.gm.makeMove(c)
+            child = GameState(self.gm.getGameState(), self.currentState.depth + 1, c)
+            if not self.visited.get(child, False):
+                child.parent = self.currentState
+                self.currentState.children.append(child)
+            self.gm.reverseMove(c)
+
+        if self.currentState.nextChildToVisit < len(self.currentState.children):
+            self.gm.makeMove(self.currentState.children[self.currentState.nextChildToVisit].requiredMovable)
+            self.currentState.nextChildToVisit += 1
+            self.currentState = self.currentState.children[self.currentState.nextChildToVisit-1]
+            return False
+
+        #no children
+        p = self.currentState.parent
+        c = self.currentState
+
+        while p is not None and p.nextChildToVisit >= len(p.children):
+            c = p
+            self.gm.reverseMove(c.requiredMovable)
+            p = p.parent
+
+        return False
